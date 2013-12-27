@@ -11,7 +11,7 @@ Fujitsu PRIMEHPC FX10や京コンピュータにおける、精密プロファイラの出力するcsvファ
 
 イベントテーブルファイル(events.csv)及び解析スクリプトrprof.rbと同じところにcsvファイルを用意し、以下のように利用します。
 
-  $ ruby rprof output_prof*.csv
+  $ ruby rprof.rb output_prof*.csv
 
 出力結果は、プロセス及びスレッド単位。観測範囲(start/end_collectionで挟まれた場所)は全てまとめて出力します。シングルスレッドジョブ、flat-MPI、hybridに対応しているはずで、FX10/京も自動判別するはずですが動作については保証しません。
 
