@@ -1,88 +1,95 @@
-# SPARC64(TM) VIIIfx/IXfx �����v���t�@�C����̓X�N���v�g
+# SPARC64(TM) VIIIfx/IXfx 精密プロファイラ解析スクリプト
 
-## �T�v
+## 概要
 
-Fujitsu PRIMEHPC FX10�⋞�R���s���[�^�ɂ�����A�����v���t�@�C���̏o�͂���csv�t�@�C������͂��A���ʂ�W���o�͂ɏo�͂���X�N���v�g�B
+Fujitsu PRIMEHPC FX10や京コンピュータにおける、精密プロファイラの出力するcsvファイルを解析し、結果を標準出力に出力するスクリプト。
 
-- rprof.rb ��̓X�N���v�g
-- events.csv �C�x���g�e�[�u��
+- rprof.rb 解析スクリプト
+- events.csv イベントテーブル
 
-## �g����
+## 使い方
 
-�C�x���g�e�[�u���t�@�C��(events.csv)�y�щ�̓X�N���v�grprof.rb�Ɠ����Ƃ����csv�t�@�C����p�ӂ��A�ȉ��̂悤�ɗ��p���܂��B
+イベントテーブルファイル(events.csv)及び解析スクリプトrprof.rbと同じところにcsvファイルを用意し、以下のように利用します。
 
   $ ruby rprof.rb output_prof*.csv
 
-�o�͌��ʂ́A�v���Z�X�y�уX���b�h�P�ʁB�ϑ��͈�(start/end_collection�ŋ��܂ꂽ�ꏊ)�͑S�Ă܂Ƃ߂ďo�͂��܂��B�V���O���X���b�h�W���u�Aflat-MPI�Ahybrid�ɑΉ����Ă���͂��ŁAFX10/�����������ʂ���͂��ł�������ɂ��Ă͕ۏ؂��܂���B
+出力結果は、プロセス及びスレッド単位。観測範囲(start/end_collectionで挟まれた場所)は全てまとめて出力します。シングルスレッドジョブ、flat-MPI、hybridに対応しているはずで、FX10/京も自動判別するはずですが動作については保証しません。
 
-## ���ӎ���
+## 注意事項
 
-- �����v���t�@�C���̗��p���@������Ă���Ɛ����������擾�ł��܂���B�����v���t�@�C���̎g������A�W���u�̓������@�ɂ��ẮA�e�T�C�g�̃}�j���A�����Q�Ƃ��Ă��������B�X�N���v�g��҂ւ̖₢���킹�͂��������������B
-- �{�X�N���v�g�̏o�͌��ʂ̐��m���ɂ��Ă͕ۏ؂��܂���B�o�O�̕񍐂͊��}�������܂����A�T�|�[�g�̕ۏ؂͂��܂���B
-- �{�X�N���v�g�ɂ��ĕx�m�ʊ�����Ђ◝���w�������͖��֌W�ł��B�{�X�N���v�g�ɂ��ĕx�m�ʊ�����Ђ◝���w�������ւ̖₢���킹�͂��������������B
-- �{�X�N���v�g�́A�����v���t�@�C���̎d�l�ύX�ɂ���Ďg���Ȃ��Ȃ�\��������܂��B
+- 精密プロファイラの利用方法が誤っていると正しく情報を取得できません。精密プロファイラの使い方や、ジョブの投入方法については、各サイトのマニュアルを参照してください。スクリプト作者への問い合わせはご遠慮ください。
+- 本スクリプトの出力結果の正確さについては保証しません。バグの報告は歓迎いたしますが、サポートの保証はしません。
+- 本スクリプトについて富士通株式会社や理化学研究所は無関係です。本スクリプトについて富士通株式会社や理化学研究所への問い合わせはご遠慮ください。
+- 本スクリプトは、精密プロファイラの仕様変更によって使えなくなる可能性があります。
 
-## ���C�Z���X
+## ライセンス
 
-�{�X�N���v�g�͏C��BSD���C�Z���X(�����BSD���C�Z���X)�ɂĒ񋟂������܂��B
+本スクリプトは修正BSDライセンス(二条項BSDライセンス)にて提供いたします。
 
-## �o�͓��e�̐���
+## 出力内容の説明
 
 ### Performance Information
-�S�̓I�Ȑ��\��\������Z�N�V�����B
 
-- ELAPSED �o�ߎ��ԁB�P�ʂ͕b�B
-- MFLOPS ���Z���\�B�P�ʂ�MFLOPS�B
-- PEAK(%) �s�[�N���\��B
-- MIPS ���Z���B�P�ʂ�MIPS(�S���C���X�g���N�V�������b)
+全体的な性能を表示するセクション。
+
+- ELAPSED 経過時間。単位は秒。
+- MFLOPS 演算性能。単位はMFLOPS。
+- PEAK(%) ピーク性能比。
+- MIPS 演算数。単位はMIPS(百万インストラクション毎秒)
 
 ### SIMD Information
-���������_���Z�ƁA����SIMD�̐��\��\������Z�N�V�����B
 
-- SIMD(%)SIMD�����ꂽ���������_���Z(��Z/�����Z)�̊����B
-- FLOAT(%) SIMD������Ă��Ȃ����������_���Z(��Z/�����Z)�̊����B
-- SIMD-FMA(%) SIMD�����ꂽ�Ϙa���Z�̊����B
-- FMA(%) SIMD������Ă��Ȃ��Ϙa���Z�̊����B
+浮動小数点演算と、そのSIMDの性能を表示するセクション。
+
+- SIMD(%)SIMD化された浮動小数点演算(乗算/加減算)の割合。
+- FLOAT(%) SIMD化されていない浮動小数点演算(乗算/加減算)の割合。
+- SIMD-FMA(%) SIMD化された積和演算の割合。
+- FMA(%) SIMD化されていない積和演算の割合。
 
 ### Cache Information
-�L���b�V���~�X�֘A
 
-- L1DMISS(%) L1�f�[�^�L���b�V���~�X��
-- L2MISS(%) L2�L���b�V���~�X��
-- MTLBMISS(%) �f�[�^���C��TLB�~�X��
-- UTLBMISS(%) �}�C�N���f�[�^TLB�~�X��
+キャッシュミス関連
+
+- L1DMISS(%) L1データキャッシュミス率
+- L2MISS(%) L2キャッシュミス率
+- MTLBMISS(%) データメインTLBミス率
+- UTLBMISS(%) マイクロデータTLBミス率
 
 ### Wait Information (Instruction)
-�҂����(���ߊ֘A)
 
-- BARRIER(%) �X���b�h�����҂�����(MPI�̃o���A�ł͂Ȃ�)
-- INTWAIT(%) �������Z�̈ˑ��֌W�ɂ��҂�����
-- FLWAIT(%) ���������_���Z�̈ˑ��֌W�ɂ��҂�����
-- BRWAIT(%) ���򖽗߂ɂ��҂�����
-- INSTFETCH(%) ���߃t�F�b�`�҂�����
+待ち情報(命令関連)
+
+- BARRIER(%) スレッド同期待ち割合(MPIのバリアではない)
+- INTWAIT(%) 整数演算の依存関係による待ち割合
+- FLWAIT(%) 浮動小数点演算の依存関係による待ち割合
+- BRWAIT(%) 分岐命令による待ち割合
+- INSTFETCH(%) 命令フェッチ待ち割合
 
 ### Wait Information (Memory/Cache)
-�҂����(������/�L���b�V���֘A)
 
-- IMEMWAIT(%) �����̃���������̃��[�h�҂�
-- ICACHEWAIT(%) �����̃L���b�V������̃��[�h�҂�
-- FLMEMWAIT(%) �����̃���������̃��[�h�҂�
-- FLCACHEWAIT(%) �����̃L���b�V������̃��[�h�҂�
+待ち情報(メモリ/キャッシュ関連)
 
-### Commit Information 
-���߃R�~�b�g���
+- IMEMWAIT(%) 整数のメモリからのロード待ち
+- ICACHEWAIT(%) 整数のキャッシュからのロード待ち
+- FLMEMWAIT(%) 実数のメモリからのロード待ち
+- FLCACHEWAIT(%) 実数のキャッシュからのロード待ち
 
-- 0ENDOP(%) ���߂�������s���Ȃ������T�C�N������
-- 1ENDOP(%) 1�T�C�N���ň���߂𔭍s��������
-- 2/3ENDOP(%) 1�T�C�N���œ�Ȃ����O�̖��߂𓯎��ɔ��s��������
-- GPRWAIT(%) GPR�������݃|�[�g�����܂��Ă��邽��4���ߓ������s�ł��Ȃ��������� (�������W�X�^��2�A�b�v�f�[�g��)
-- 4ENDOP(%) 1�T�C�N����4�̖��߂𓯎��ɔ��s��������
+### Commit Information
 
+命令コミット情報
 
-### Other Information 
-���̑�
+- 0ENDOP(%) 命令を一つも発行しなかったサイクル割合
+- 1ENDOP(%) 1サイクルで一つ命令を発行した割合
+- 2/3ENDOP(%) 1サイクルで二つないし三つの命令を同時に発行した割合
+- GPRWAIT(%) GPR書き込みポートが埋まっているため4命令同時発行できなかった割合 (整数レジスタを2つアップデート中)
+- 4ENDOP(%) 1サイクルで4つの命令を同時に発行した割合
 
-- IPC �T�C�N��������̕��ϖ��ߐ�(Instruction Per Cycle)
+### Other Information
 
-###Measured Events
-�擾�����C�x���g���X�g�B�ڍׂɂ��Ă�[SPARC64(TM) VIIIfx Extensions (PDF)](http://img.jp.fujitsu.com/downloads/jp/jhpc/sparc64viiifx-extensionsj.pdf)���Q�Ƃ��邱�ƁB
+その他
+
+- IPC サイクルあたりの平均命令数(Instruction Per Cycle)
+
+### Measured Events
+
+取得したイベントリスト。詳細については[SPARC64(TM) VIIIfx Extensions (PDF)](http://img.jp.fujitsu.com/downloads/jp/jhpc/sparc64viiifx-extensionsj.pdf)を参照すること。
